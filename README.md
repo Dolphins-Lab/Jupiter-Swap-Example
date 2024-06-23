@@ -1,5 +1,5 @@
 ```sh
-cd Pump-Fun-Listener
+cd Jupiter-Swap-Example
 npm i
 ts-node swap.ts
 ```
