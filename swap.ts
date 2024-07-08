@@ -3,14 +3,13 @@
 import { Wallet } from "@project-serum/anchor";
 import { getKeypairFromEnvironment } from "@solana-developers/helpers";
 import { Connection, Keypair, VersionedTransaction } from "@solana/web3.js";
-import bs58 from "bs58";
 import "dotenv/config";
 
 let inputMint = "So11111111111111111111111111111111111111112"; // SOL as example but any other mint will work as well
 let outputMint = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
 let amount = 100000000; // Lamports
 let slippageBps = 50; // 0.5%
-let feeAccountAddress = "fee_account_public_key"; // Address of the fee account
+let feeAccountAddress = "42zCqyYC2yY5oDDgF4ztfsWGsvEg6GvHfLojJtKRz44y"; // Address of the fee account
 
 const jupiterSwap = async (
   inputMint: string,
@@ -39,34 +38,34 @@ const jupiterSwap = async (
       )
     ).json();
 
-    console.log({ quoteResponse });
+    // console.log({ quoteResponse });
 
     // get serialized transactions for the swap
-    const { swapTransaction } = await (
+    const swapApiResponse = await (
       await fetch("https://quote-api.jup.ag/v6/swap", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // quoteResponse from /quote api
           quoteResponse,
-          // user public key to be used for the swap
           userPublicKey: wallet.publicKey.toString(),
-          // auto wrap and unwrap SOL. default is true
           wrapAndUnwrapSol: true,
-          // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
           feeAccount: feeAccountAddress,
         }),
       })
     ).json();
 
-    // deserialize the transaction
+    console.log("Swap API Response:", swapApiResponse);
+
+    const swapTransaction = swapApiResponse.swapTransaction;
+
+    if (!swapTransaction) throw new Error("Swap transaction not found");
+
     const swapTransactionBuf = Buffer.from(swapTransaction, "base64");
     let transaction = VersionedTransaction.deserialize(swapTransactionBuf);
-    console.log(transaction);
+    console.log("Deserialized Transaction:", transaction);
 
-    // sign the transaction
     transaction.sign([wallet.payer]);
 
     // console.log(transaction);
