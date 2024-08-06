@@ -8,8 +8,8 @@ import "dotenv/config";
 let inputMint = "So11111111111111111111111111111111111111112"; // SOL as example but any other mint will work as well
 let outputMint = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC
 let amount = 100000000; // Lamports
-let slippageBps = 50; // 0.5%
-let feeAccountAddress = "42zCqyYC2yY5oDDgF4ztfsWGsvEg6GvHfLojJtKRz44y"; // Address of the fee account
+let slippageBps = 100; // 1%
+let feeAccountAddress = "7785dZSPa7nXCdigZNpYEkYPniuoGKE9BRSpSMWXr42P"; // Address of the fee account
 
 const jupiterSwap = async (
   inputMint: string,
